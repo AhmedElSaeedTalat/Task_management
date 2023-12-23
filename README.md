@@ -30,7 +30,7 @@ task management system.
 * HTML, CSS, JS
 
 ## Installation
-$ Clone the repository: `git clone https://github.com/AhmedElSaeedTalat/django-chat-room`  
+$ Clone the repository: `git clone https://github.com/AhmedElSaeedTalat/Task_management`  
 
 ## Author:
 Ahmed Talat [Github](https://github.com/AhmedElSaeedTalat) | [twitter](https://twitter.com/AhmedElsaeed105)

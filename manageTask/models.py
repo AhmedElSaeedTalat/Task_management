@@ -21,7 +21,7 @@ class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task')
 
     
-class Employee:
+class Employee(models.Model):
     """ create model for tasks """
     Employee_id = models.IntegerField(null=False)
     salary = models.DecimalField(decimal_places=2, max_digits=65)
@@ -48,7 +48,7 @@ class Recognitions(models.Model):
     name = models.CharField(max_length=200, null=True)
 
 
-class Comments:
+class Comments(models.Model):
     """ create comments model for relevant tasks """
     comment = models.CharField(max_length=500, null=False)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comment')

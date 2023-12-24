@@ -4,16 +4,16 @@ from django.utils import timezone
 """ models classes """
 
 
-class Category(models.model):
+class Category(models.Model):
     """ creating model for categories """
-    name = models.CharField(max_width=200, null=False)
-    description = models.CharField(max_width=500, null=False)
+    name = models.CharField(max_length=200, null=False)
+    description = models.CharField(max_length=500, null=False)
 
 
 class Task(models.Model):
     """ create model for tasks """
     title = models.CharField(max_length=200, null=False)
-    description = models.CharField(max_width=500, null=False)
+    description = models.CharField(max_length=500, null=False)
     status = models.BooleanField(default=False)
     priority = models.BooleanField(default=False)
     due_date = models.DateField(null=False)
@@ -45,7 +45,7 @@ class Employee:
 
 class Recognitions(models.Model):
     """ recongnitions """
-    name = models.CharField(match=200, null=True)
+    name = models.CharField(max_length=200, null=True)
 
 
 class Comments:

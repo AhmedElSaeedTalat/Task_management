@@ -7,9 +7,9 @@ from .models import Comments
 from .models import History
 
 # Register your models here.
-admin.register(Category)
-admin.register(Task)
-admin.register(Employee)
-admin.register(Recognitions)
-admin.register(Comments)
-admin.register(History)
+admin.site.register(Category)
+admin.site.register(Task)
+admin.site.register(Employee)
+admin.site.register(Recognitions)
+admin.site.register(Comments)
+admin.site.register(History)

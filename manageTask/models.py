@@ -23,9 +23,8 @@ class Task(models.Model):
     
 class Employee(models.Model):
     """ create model for tasks """
-    Employee_id = models.IntegerField(null=False)
     salary = models.DecimalField(decimal_places=2, max_digits=65)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='employee')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee')
     task_count = models.IntegerField(default=0)
     total_taskCount = models.IntegerField(default=0)
     bonus = models.DecimalField(decimal_places=2, max_digits=65, default=0.00)
@@ -42,6 +41,10 @@ class Employee(models.Model):
         if self.task_count == 400:
             self.bonus += self.salary * 0.02
             self.task_count = 0
+        
+    def __str__(self):
+        """ string representation """
+        return str(self.user)
 
 class Recognitions(models.Model):
     """ recongnitions """

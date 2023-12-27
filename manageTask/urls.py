@@ -8,5 +8,6 @@ router.register('employees', restViews.EmployeeRestView, basename='employees')
 """ views in url page """
 urlpatterns = [
     path('employees/', views.EmployeeView.as_view()),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    path('search-employee/', views.search_employee, name='search-employee')
 ]

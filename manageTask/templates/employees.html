@@ -6,10 +6,31 @@
     <title>Document</title>
 </head>
 <body>
+    <label for="search">search</label>
+    <input type="number" name="search" id="search">
+    <input type="submit" id="searchEmployee">    
     <form action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ data.form.as_p }}
         <input type="submit">
     </form>
+    <script>
+        const btn = document.getElementById('searchEmployee')
+        btn.onclick = () => {
+            const searched = document.getElementById('search').value
+            const sr = {'search': searched}
+            fetch('/task/search-employee/', {
+                method: 'POST',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify(sr)
+            }).then(res => {
+                return res.json();
+            }).then(data => {
+                console.log(data);
+            });
+        }
+    </script>
 </body>
 </html>

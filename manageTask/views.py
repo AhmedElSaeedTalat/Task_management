@@ -10,6 +10,8 @@ from .tree import Tree_Node
 import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.contrib.auth.models import User
+from .sort import sort_values
 """ views """
 
 def home(request):
@@ -41,28 +43,54 @@ class EmployeeView(View):
 def search_employee(request):
     """ 
         function to search employee based on salary
-        -- retrieve all employees with the relevant salary 
+        -- retrieve searched employee based on salary or username 
     """
     search_salary = json.load(request)
-    search = int(search_salary['search'])
-    # print(search_salary['search'])
+    key = search_salary['key']
     names = []
     employees = Employee.objects.all()
-    """ retrieve avarage salary and create root node with it"""
-    avg = Employee.objects.aggregate(Avg("salary"))['salary__avg']
-    root_node = Tree_Node()
-    root_node.salary = avg
-    root_node.username = 'root'
+    """
+        if key passed through post request is username
+        -- usernames are sorted to determine root 4 the tree
+        -- a tree is built from employees objects to nodes
+        -- value received passed to tree to seach
+        -- Return - username and salary found 
+    """
+    if key == 'username':
+        seach_value = search_salary['search']
+        users = User.objects.values_list('username', flat=True)
+        users = list(users)
+        sort_values(users, 0, len(users) - 1)
+        mid = int(0 + (len(users) - 0) / 2)
+        user_root = users[mid]
+        root_node = Tree_Node()
+        root_node.username = user_root
+        root_node.salary = 0
+        for node in employees:
+            node = root_node.create_node(node)
+            root_node.insert_node(node, root_node, 'username')
+        found_node = root_node.search('username', root_node, seach_value, [])
+        
+        for node in found_node:
+            names.append({'name': node.username, 'salary':node.salary})
 
-    """ create node from Employees queryset"""
-    for node in employees:
-        node = root_node.create_node(node)
-        root_node.insert_node(node, root_node)
-    """ search for employee based on salary """
-    found_node = root_node.search(root_node, search, [])
+    else:
+        search = int(search_salary['search'])
+        """ retrieve avarage salary and create root node with it"""
+        avg = Employee.objects.aggregate(Avg("salary"))['salary__avg']
+        root_node = Tree_Node()
+        root_node.salary = avg
+        root_node.username = 'root'
 
-    for node in found_node:
-        names.append(node.username)
+        """ create node from Employees queryset"""
+        for node in employees:
+            node = root_node.create_node(node)
+            root_node.insert_node(node, root_node, 'salary')
+        """ search for employee based on salary """
+        found_node = root_node.search('salary', root_node, search, [])
+
+        for node in found_node:
+            names.append(node.username)
 
     return JsonResponse({'data': names})
 

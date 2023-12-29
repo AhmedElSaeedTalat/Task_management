@@ -10,7 +10,7 @@ class Tree_Node:
         self.left = left
         self.right = right
 
-    def insert_node(self, node, parent):
+    def insert_node(self, node, parent, key):
         """ 
             insert Employee node in tree
             -- if salary in node lt or eq to parent
@@ -21,14 +21,24 @@ class Tree_Node:
                 parent: parent node
             Return - node inserted at the end of recursion
         """
-        if parent is None:
-            return node
-            
-        if node.salary > parent.salary:
-            parent.right =  self.insert_node(node, parent.right)
-        elif node.salary <= parent.salary:
-            parent.left =  self.insert_node(node, parent.left)
-        return parent
+        if key == 'salary':
+            if parent is None:
+                return node
+                
+            if node.salary > parent.salary:
+                parent.right =  self.insert_node(node, parent.right, key)
+            elif node.salary <= parent.salary:
+                parent.left =  self.insert_node(node, parent.left, key)
+            return parent
+        elif key == 'username':
+            if parent is None:
+                return node    
+            if node.username > parent.username:
+                parent.right =  self.insert_node(node, parent.right, key)
+            elif node.username <= parent.username:
+                parent.left =  self.insert_node(node, parent.left, key)
+            return parent
+
 
     def create_node(self, obj):
         """ 
@@ -59,18 +69,34 @@ class Tree_Node:
         self.traverse(root.right, sorted_data)
         return sorted_data
 
-    def search(self, parent, value, nodes=[]):
+    def search(self, key, parent, value, nodes=[]):
         """ search value in binary tree """
-        if parent is None:
-            return nodes
-        
-        if value <= parent.salary: 
-            nodes = self.search(parent.left, value, nodes)
-        
-        if value == parent.salary:
-            nodes.append(parent)
+        if key == 'salary':
+            if parent is None:
+                return nodes
+            
+            if value <= parent.salary: 
+                nodes = self.search(key, parent.left, value, nodes)
+            
+            if value == parent.salary:
+                nodes.append(parent)
+                return nodes
+
+            if value > parent.salary:
+                nodes = self.search(key, parent.right, value, nodes)
             return nodes
 
-        if value > parent.salary:
-            nodes = self.search(parent.right, value, nodes)
-        return nodes
+        elif key == 'username':
+            if parent is None:
+                return nodes
+            
+            if value <= parent.username: 
+                nodes = self.search(key, parent.left, value, nodes)
+            
+            if value == parent.username:
+                nodes.append(parent)
+                return nodes
+
+            if value > parent.username:
+                nodes = self.search(key, parent.right, value, nodes)
+            return nodes

@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from .sort import sort_values
+from .linked import Node
 """ views """
 
 def home(request):
@@ -70,9 +71,6 @@ def search_employee(request):
             node = root_node.create_node(node)
             root_node.insert_node(node, root_node, 'username')
         found_node = root_node.search('username', root_node, seach_value, [])
-        
-        for node in found_node:
-            names.append({'name': node.username, 'salary':node.salary})
 
     else:
         search = int(search_salary['search'])
@@ -89,12 +87,25 @@ def search_employee(request):
         """ search for employee based on salary """
         found_node = root_node.search('salary', root_node, search, [])
 
-        for node in found_node:
-            names.append(node.username)
+    for node in found_node:
+        names.append({'name': node.username, 'salary': node.salary})
 
     return JsonResponse({'data': names})
 
-    
+
+def view_employee(request):
+    """ view each employee through linked-lists """
+    employees = Employee.objects.all()
+    employees_list = []
+    for employee in employees:
+        employee_dict = {}
+        employee_dict['salary'] = str(employee.salary)
+        employee_dict['taskCount'] = employee.total_taskCount
+        employee_dict['user_name'] = employee.user.username
+        employees_list.append(employee_dict)
+
+    return render(request, 'employee.html', {'list_employees': json.dumps(employees_list)})
+
 
 
 

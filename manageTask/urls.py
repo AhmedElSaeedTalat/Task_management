@@ -7,8 +7,9 @@ router = DefaultRouter()
 router.register('employees', restViews.EmployeeRestView, basename='employees')
 """ views in url page """
 urlpatterns = [
-    path('employees/', views.EmployeeView.as_view()),
+    path('employees/', views.EmployeeView.as_view(), name='EmployeeView'),
     path('api/', include(router.urls)),
     path('search-employee/', views.search_employee, name='search-employee'),
-    path('employee/', views.view_employee, name='employee')
+    path('employee/', views.view_employee, name='employee'),
+    path('delete/', views.delete_employee, name='delete') 
 ]

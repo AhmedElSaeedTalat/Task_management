@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,54 +7,40 @@
     <title>Document</title>
 </head>
 <body>
+    <!-- search by salary -->
     <div>
         <label for="search">search by salary</label>
         <input type="number" name="search" id="search">
         <input type="submit" id="searchEmployee">
     </div>
+    <!-- search by name -->
     <div>
         <label for="search_name">search by name</label>  
         <input type="text" name="search_name" id="search_name">
         <input type="submit" id="search_name_employee">
     </div>
+    <!-- add employee -->
     <form action="" method="post">
         {% csrf_token %}
         {{ data.form.as_p }}
-        <input type="submit">
+        <input type="submit" value="add employee">
     </form>
-    <script>
-        const btn = document.getElementById('searchEmployee')
-        const btn_name = document.getElementById('search_name_employee')
-        btn.onclick = () => {
-            const searched = document.getElementById('search').value
-            const sr = {'search': searched, 'key': 'salary'}
-            fetch('/task/search-employee/', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify(sr)
-            }).then(res => {
-                return res.json();
-            }).then(data => {
-                console.log(data);
-            });
-        }
-        btn_name.onclick = () => {
-            const searched = document.getElementById('search_name').value
-            const sr = {'search': searched, 'key': 'username'}
-            fetch('/task/search-employee/', {
-                method: 'POST',
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify(sr)
-            }).then(res => {
-                return res.json();
-            }).then(data => {
-                console.log(data);
-            });
-        }
-    </script>
+    <!-- delete employee -->
+    <form method="post" action="/task/delete/">
+        {% csrf_token %}
+        <label for="employee_id">employee id</label>
+        <input type="number" name="employee_id">
+        <input type="submit" value="delete employee">
+    </form>
+    
+    {% if messages %}
+        
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+            
+    {% endif %}
+        
+    <script src="{% static 'searchEmp.js' %}"></script>
 </body>
 </html>

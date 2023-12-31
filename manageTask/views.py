@@ -12,7 +12,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from .sort import sort_values
-from .linked import Node
+from django.shortcuts import redirect
+from django.urls import reverse_lazy
+from django.contrib import messages
 """ views """
 
 def home(request):
@@ -39,7 +41,7 @@ class EmployeeView(View):
             return HttpResponse('data saved')
         else:
             raise ValidationError('not valid')
-        
+            
 @csrf_exempt
 def search_employee(request):
     """ 
@@ -106,8 +108,10 @@ def view_employee(request):
 
     return render(request, 'employee.html', {'list_employees': json.dumps(employees_list)})
 
-
-
-
-
-
+def delete_employee(request):
+    """ deletes employee """
+    user_id = request.POST['employee_id']
+    user = User.objects.filter(pk=user_id)
+    user.delete()
+    messages.success(request, 'user got deleted')
+    return redirect('EmployeeView')

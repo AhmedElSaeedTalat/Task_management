@@ -4,6 +4,7 @@ from .models import Employee
 from .serializers import EmployeeSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from rest_framework.decorators import action
 """ module for rest views """
 
 
@@ -17,6 +18,11 @@ class EmployeeRestView(viewsets.ViewSet):
             return Response(serializer.data)
         else:
             return Response('not authorized to view')
+
+    def retrieve(self, request, pk):
+        employee = Employee.objects.filter(pk=pk).first()
+        serializer = EmployeeSerializer(employee)
+        return Response(serializer.data)
 
     def post(self, request):
         """ 
@@ -41,3 +47,15 @@ class EmployeeRestView(viewsets.ViewSet):
             return Response('Employee got created')
         else:
             return Response(serializer.errors)
+    
+    def delete(self, request, pk):
+        """ function to delete """
+        if request.user.groups.filter(name='Manager').exists():
+            employee = get_object_or_404(Employee, pk=pk)
+            user = get_object_or_404(User, pk=employee.user.id)
+            employee.delete()
+            user.delete()
+            return Response('user got deleted')
+        else:
+            return Response('not authorized to view')
+

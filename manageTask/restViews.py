@@ -1,13 +1,15 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .models import Employee
-from .serializers import EmployeeSerializer
+from .models import Employee, Category, Task
+from .serializers import EmployeeSerializer, CategorySerializer, TaskSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
 """ module for rest views """
 
 
+
+""" Employee Rest API Views """
 class EmployeeRestView(viewsets.ViewSet):
     """ Employee view class """
     def list(self, request):
@@ -49,7 +51,7 @@ class EmployeeRestView(viewsets.ViewSet):
             return Response(serializer.errors)
     
     def delete(self, request, pk):
-        """ function to delete """
+        """ function to delete employee """
         if request.user.groups.filter(name='Manager').exists():
             employee = get_object_or_404(Employee, pk=pk)
             user = get_object_or_404(User, pk=employee.user.id)
@@ -59,3 +61,37 @@ class EmployeeRestView(viewsets.ViewSet):
         else:
             return Response('not authorized to view')
 
+""" categories """
+class CategoryView(viewsets.ViewSet):
+    """ category class """
+    def list(self, request):
+        """ list all categories """
+        queryset = Category.objects.all()
+        serializer = CategorySerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk):
+        """ retrieve categories """
+        category = get_object_or_404(Category, pk=pk)
+        serializer = CategorySerializer(category)
+        return Response(serializer.data)
+
+    def post(self, request):
+        """ post to categories """
+        queryset = request.data
+        serializer = CategorySerializer(data=queryset)
+        if serializer.is_valid():
+            cat = Category.objects.create(
+                name = serializer.validated_data['name'],
+                description = serializer.validated_data['description']
+            )
+            cat.save()
+            return Response('category is created')
+        else:
+            return Response('incorrect data')
+        
+    def delete(self, request, pk):
+        """ delete category """
+        obj = get_object_or_404(Category, pk=pk)
+        obj.delete()
+        return Response('category got deleted')

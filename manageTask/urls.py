@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 router = DefaultRouter()
 router.register('employees', restViews.EmployeeRestView, basename='employees')
 router.register('categories', restViews.CategoryView, basename='categories')
+router.register('task', restViews.TaskView, basename='task')
 """ views in url page """
 urlpatterns = [
     path('employees/', views.EmployeeView.as_view(), name='EmployeeView'),

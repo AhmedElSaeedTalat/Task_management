@@ -9,18 +9,6 @@ class Category(models.Model):
     name = models.CharField(max_length=200, null=False)
     description = models.CharField(max_length=500, null=False)
 
-
-class Task(models.Model):
-    """ create model for tasks """
-    title = models.CharField(max_length=200, null=False)
-    description = models.CharField(max_length=500, null=False)
-    status = models.BooleanField(default=False)
-    priority = models.BooleanField(default=False)
-    due_date = models.DateField(null=False)
-    category = models.ManyToManyField(Category)
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='task')
-
-    
 class Employee(models.Model):
     """ create model for tasks """
     salary = models.DecimalField(decimal_places=2, max_digits=65)
@@ -46,6 +34,16 @@ class Employee(models.Model):
         """ string representation """
         return str(self.user)
 
+class Task(models.Model):
+    """ create model for tasks """
+    title = models.CharField(max_length=200, null=False)
+    description = models.CharField(max_length=500, null=False)
+    status = models.BooleanField(default=False)
+    priority = models.BooleanField(default=False)
+    due_date = models.DateField(null=False)
+    category = models.ManyToManyField(Category)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='task', default=0)
+
 class Recognitions(models.Model):
     """ recongnitions """
     name = models.CharField(max_length=200, null=True)
@@ -62,5 +60,5 @@ class History(models.Model):
     """ creating model for categories """
     action = models.CharField(max_length=200, null=False)
     task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name='history')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='history')
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='history', default=0)
     date = models.DateField(default=timezone.now)

@@ -95,3 +95,41 @@ class CategoryView(viewsets.ViewSet):
         obj = get_object_or_404(Category, pk=pk)
         obj.delete()
         return Response('category got deleted')
+    
+class TaskView(viewsets.ViewSet):
+    """ view for listing and adding tasks """
+    def list(self, request):
+        """ list all Tasks """
+        queryset = Task.objects.all()
+        serializer = TaskSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, pk):
+        """ retrieve Task """
+        category = get_object_or_404(Task, pk=pk)
+        serializer = TaskSerializer(category)
+        return Response(serializer.data)
+
+    def post(self, request):
+        """ post to task """
+        queryset = request.data
+        serializer = TaskSerializer(data=queryset)
+        if serializer.is_valid():
+            task = Task.objects.create(
+                title = serializer.validated_data['title'],
+                description = serializer.validated_data['description'],
+                due_date = serializer.validated_data['due_date'],
+                employee = serializer.validated_data['employee']
+            )
+            task.category.set(serializer.validated_data['category'])
+            task.save()
+            return Response('task is created')
+        else:
+            print(serializer.errors)
+            return Response('incorrect data')
+        
+    def delete(self, request, pk):
+        """ delete Task """
+        obj = get_object_or_404(Task, pk=pk)
+        obj.delete()
+        return Response('Task got deleted')

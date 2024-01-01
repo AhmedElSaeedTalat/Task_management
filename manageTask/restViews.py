@@ -5,11 +5,14 @@ from .serializers import EmployeeSerializer, CategorySerializer, TaskSerializer
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from rest_framework.decorators import action
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
 """ module for rest views """
 
 
 
 """ Employee Rest API Views """
+@permission_classes([IsAuthenticated])
 class EmployeeRestView(viewsets.ViewSet):
     """ Employee view class """
     def list(self, request):
@@ -96,13 +99,27 @@ class CategoryView(viewsets.ViewSet):
         obj.delete()
         return Response('category got deleted')
     
+
+""" Task view """
+@permission_classes([IsAuthenticated])
 class TaskView(viewsets.ViewSet):
     """ view for listing and adding tasks """
     def list(self, request):
-        """ list all Tasks """
-        queryset = Task.objects.all()
-        serializer = TaskSerializer(queryset, many=True)
-        return Response(serializer.data)
+        """ 
+            -- list all Tasks if manager is accessing data
+            -- list corresponing tasks in case of the employee
+        """
+        if request.user.groups.filter(name='Manager').exists():
+            queryset = Task.objects.all()
+            serializer = TaskSerializer(queryset, many=True)
+            return Response(serializer.data)
+        else:
+            user_id = request.user.id
+            user = get_object_or_404(User, pk=user_id)
+            employee = user.employee
+            tasks = employee.task
+            serializer = TaskSerializer(tasks, many=True)
+            return Response(serializer.data)
 
     def retrieve(self, request, pk):
         """ retrieve Task """

@@ -3,6 +3,7 @@ from . import views
 from . import restViews 
 from rest_framework.routers import DefaultRouter
 
+
 router = DefaultRouter()
 router.register('employees', restViews.EmployeeRestView, basename='employees')
 router.register('categories', restViews.CategoryView, basename='categories')

@@ -8,7 +8,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
     """ serializers for employess """
     class Meta:
         model = Employee
-        fields = ('salary', 'user', 'bonus', 'total_taskCount')
+        fields = ('id', 'salary', 'user', 'bonus', 'total_taskCount')
 
 class CategorySerializer(serializers.ModelSerializer):
     """ serializer for category """

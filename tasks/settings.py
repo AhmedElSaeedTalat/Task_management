@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'manageTask',
-    'rest_framework'
+    'rest_framework',
+    'rest_framework_simplejwt',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'manageTask/static'),
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ]
+}
